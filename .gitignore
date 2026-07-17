@@ -19,3 +19,10 @@ trap-room-backups/
 Thumbs.db
 .idea/
 .vscode/
+.vercel/
+.railway/
+.env.development
+.env.production
+.env.*.local
+!.env.railway.example
+!.env.production.example

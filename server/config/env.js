@@ -17,17 +17,29 @@ export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: Number(process.env.PORT || 4000),
   clientOrigins: String(
+    process.env.CLIENT_ORIGINS ||
     process.env.CLIENT_ORIGIN || "http://localhost:5173"
   )
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean),
+  serveFrontend:
+    String(
+      process.env.SERVE_FRONTEND || "false"
+    ).toLowerCase() === "true",
+  allowVercelPreviews:
+    String(
+      process.env.ALLOW_VERCEL_PREVIEWS || "false"
+    ).toLowerCase() === "true",
+
   mongodbUri: required("MONGODB_URI"),
   admin: {
     username: required("ADMIN_USERNAME"),
     password: required("ADMIN_PASSWORD"),
     jwtSecret: required("ADMIN_JWT_SECRET"),
-    cookieName: "trap_admin_token",
+    cookieName:
+      process.env.ADMIN_COOKIE_NAME ||
+      "trap_admin_token",
   },
   cloudinary: {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME || "",

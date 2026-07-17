@@ -36,10 +36,39 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
 
+function isAllowedClientOrigin(origin) {
+  if (!origin) {
+    return true;
+  }
+
+  if (env.clientOrigins.includes(origin)) {
+    return true;
+  }
+
+  if (isPrivateDevelopmentOrigin(origin)) {
+    return true;
+  }
+
+  if (!env.allowVercelPreviews) {
+    return false;
+  }
+
+  try {
+    const url = new URL(origin);
+
+    return (
+      url.protocol === "https:" &&
+      url.hostname.endsWith(".vercel.app")
+    );
+  } catch {
+    return false;
+  }
+}
+
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || (env.clientOrigins.includes(origin) || isPrivateDevelopmentOrigin(origin))) {
+      if (isAllowedClientOrigin(origin)) {
         return callback(null, true);
       }
 
@@ -90,7 +119,10 @@ app.use("/api/employees", employeeRoutes);
 app.use("/api/work-shifts", workShiftRoutes);
 app.use("/api/translations-admin", adminTranslationsRoutes);
 
-if (env.nodeEnv === "production") {
+if (
+  env.nodeEnv === "production" &&
+  env.serveFrontend
+) {
   const dist = path.resolve(__dirname, "../dist");
   app.use(express.static(dist));
 

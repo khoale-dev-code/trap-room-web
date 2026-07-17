@@ -1,0 +1,269 @@
+
+/*
+ * TRAP Room Admin collapsed sidebar V14
+ * Keeps the rail compact, centered and free of clipped labels/actions.
+ */
+
+:root {
+  --trap-admin-sidebar-collapsed-width: 92px;
+}
+
+[data-admin-shell="true"] {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"] > div {
+    grid-template-columns:
+      var(--trap-admin-sidebar-collapsed-width)
+      minmax(0, 1fr) !important;
+  }
+
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"] {
+    width: var(--trap-admin-sidebar-collapsed-width) !important;
+    min-width: var(--trap-admin-sidebar-collapsed-width) !important;
+    max-width: var(--trap-admin-sidebar-collapsed-width) !important;
+    overflow: hidden !important;
+  }
+
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"],
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"] * {
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  /*
+   * Brand/header area:
+   * keep only the round TRAP logo and the sidebar toggle.
+   */
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:first-child {
+    width: 100% !important;
+    min-height: 108px;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.45rem !important;
+    padding: 0.8rem 0.5rem !important;
+  }
+
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:first-child
+    img {
+    width: 3.25rem !important;
+    height: 3.25rem !important;
+    max-width: 3.25rem !important;
+    max-height: 3.25rem !important;
+    object-fit: cover;
+  }
+
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:first-child
+    p,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:first-child
+    h1,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:first-child
+    h2,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:first-child
+    small {
+    display: none !important;
+  }
+
+  /*
+   * Scrollable navigation:
+   * fixed icon rail, no text fragments or overflowing group labels.
+   */
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav {
+    width: 100% !important;
+    padding-inline: 0.55rem !important;
+    scrollbar-gutter: stable;
+  }
+
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav
+    p,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav
+    h2,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav
+    h3,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav
+    small {
+    display: none !important;
+  }
+
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav
+    a,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav
+    button {
+    width: 3.5rem !important;
+    min-width: 3.5rem !important;
+    max-width: 3.5rem !important;
+    min-height: 3.5rem !important;
+    margin-inline: auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    border-radius: 1rem !important;
+    text-align: center !important;
+  }
+
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav
+    a
+    > div,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav
+    button
+    > div,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav
+    a
+    > span:not(:has(svg)),
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav
+    button
+    > span:not(:has(svg)) {
+    display: none !important;
+  }
+
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    nav
+    svg {
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+    flex: 0 0 auto;
+  }
+
+  /*
+   * Footer/account block:
+   * center avatar, website and sign-out actions as square buttons.
+   */
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child {
+    width: 100% !important;
+    align-items: center !important;
+    gap: 0.55rem !important;
+    padding: 0.7rem 0.5rem 0.9rem !important;
+  }
+
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child
+    p,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child
+    h2,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child
+    h3,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child
+    small,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child
+    strong {
+    display: none !important;
+  }
+
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child
+    a,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child
+    button {
+    width: 3.45rem !important;
+    min-width: 3.45rem !important;
+    max-width: 3.45rem !important;
+    min-height: 3.45rem !important;
+    margin-inline: auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    border-radius: 999px !important;
+  }
+
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child
+    a
+    > span:not(:has(svg)),
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child
+    button
+    > span:not(:has(svg)),
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child
+    a
+    > div,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    [data-admin-sidebar="desktop"]
+    > div:last-child
+    button
+    > div {
+    display: none !important;
+  }
+
+  /*
+   * Ensure the content area immediately receives the recovered width.
+   */
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    > div
+    > section,
+  [data-admin-shell="true"][data-admin-sidebar-collapsed="true"]
+    > div
+    > main {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-admin-shell="true"] > div,
+  [data-admin-sidebar="desktop"] {
+    transition-duration: 1ms !important;
+  }
+}

@@ -1,0 +1,29 @@
+/*
+  Shared real-device safeguards for Chrome and Safari.
+*/
+
+.trap-safe-header {
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
+}
+
+.trap-mobile-menu {
+  max-height: calc(100vh - 112px);
+  max-height: calc(100dvh - 112px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.trap-touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+@media (display-mode: standalone) {
+  .trap-safe-header {
+    padding-top: env(safe-area-inset-top);
+  }
+}

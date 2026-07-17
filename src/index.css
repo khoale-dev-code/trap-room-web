@@ -1,0 +1,1039 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+/* ================================================================
+   TAOS — Tailwind Animation on Scroll
+================================================================ */
+
+@custom-variant taos (&.taos-init:where(:not(.taos-animate)));
+
+html.js :where([class*="taos:"]:not(.taos-init)) {
+  visibility: hidden;
+}
+
+@source inline('!duration-[0ms] !delay-[0ms]');
+
+/* ================================================================
+   TAILWIND THEME
+================================================================ */
+
+@theme {
+  --color-trap-blue: #011ea0;
+  --color-trap-yellow: #ffe53a;
+  --color-trap-orange: #ef4d05;
+
+  --color-trap-ink: #07113f;
+  --color-trap-paper: #fffaf0;
+  --color-trap-cream: #f7f2e6;
+  --color-trap-milk: #fffdf8;
+
+  --color-trap-soft-blue: #eef1ff;
+  --color-trap-soft-yellow: #fff9d7;
+  --color-trap-soft-orange: #fff0e9;
+
+  --font-display: "Archivo Black", "Arial Black", sans-serif;
+  --font-editorial: "Instrument Serif", Georgia, serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+
+  --ease-trap: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --shadow-trap:
+    0 22px 70px rgb(7 17 63 / 18%);
+}
+
+/* ================================================================
+   ROOT VARIABLES
+================================================================ */
+
+:root {
+  color: #07113f;
+  background: #ffffff;
+
+  font-family:
+    "Manrope",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --trap-header-height: 116px;
+  --trap-safe-left: env(safe-area-inset-left, 0px);
+  --trap-safe-right: env(safe-area-inset-right, 0px);
+  --trap-safe-top: env(safe-area-inset-top, 0px);
+  --trap-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ================================================================
+   BASE RESET
+================================================================ */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    min-width: 320px;
+
+    scroll-behavior: smooth;
+    scroll-padding-top: 118px;
+
+    background: #ffffff;
+
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    min-height: 100dvh;
+
+    margin: 0;
+
+    overflow-x: hidden;
+    overflow-x: clip;
+
+    color: #07113f;
+    background: #ffffff;
+  }
+
+  body,
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    color: inherit;
+  }
+
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
+  button {
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+  }
+
+  img,
+  picture,
+  video,
+  canvas,
+  svg,
+  iframe {
+    display: block;
+    max-width: 100%;
+  }
+
+  img,
+  video {
+    height: auto;
+  }
+
+  iframe {
+    border: 0;
+  }
+
+  input,
+  textarea,
+  select {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  /*
+   * Quan trọng:
+   * Không sử dụng `a { color: inherit; }`.
+   * Quy tắc cũ ghi đè màu Tailwind trên các Link CTA.
+   */
+  a {
+    text-decoration: none;
+  }
+
+  /*
+   * Chỉ liên kết thuần, không có class, mới kế thừa màu chữ.
+   */
+  a:not([class]) {
+    color: inherit;
+  }
+
+  a,
+  button {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-block: 0;
+  }
+
+  ul,
+  ol {
+    margin: 0;
+    padding: 0;
+  }
+
+  ::selection {
+    color: #ffe53a;
+    background: #011ea0;
+  }
+
+  :focus-visible {
+    outline: 3px solid #ef4d05;
+    outline-offset: 3px;
+  }
+
+  :target {
+    scroll-margin-top: 118px;
+  }
+}
+
+/* ================================================================
+   TYPOGRAPHY
+================================================================ */
+
+@layer components {
+  .trap-display,
+  .font-display {
+    font-family:
+      "Archivo Black",
+      "Arial Black",
+      sans-serif;
+  }
+
+  .trap-editorial,
+  .font-editorial {
+    font-family:
+      "Instrument Serif",
+      Georgia,
+      serif;
+  }
+
+  .trap-title {
+    font-family:
+      "Archivo Black",
+      "Arial Black",
+      sans-serif;
+
+    font-size: clamp(3rem, 8vw, 8.8rem);
+    line-height: 0.82;
+    letter-spacing: -0.078em;
+
+    text-transform: lowercase;
+    text-wrap: balance;
+  }
+
+  .trap-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+
+    text-transform: uppercase;
+  }
+
+  .trap-kicker::before {
+    width: 2.6rem;
+    height: 2px;
+
+    flex: 0 0 auto;
+
+    content: "";
+    background: currentColor;
+  }
+}
+
+/* ================================================================
+   LAYOUT HELPERS
+================================================================ */
+
+@layer components {
+  .trap-pad {
+    padding-inline:
+      max(
+        clamp(1rem, 4vw, 5rem),
+        env(safe-area-inset-left)
+      );
+  }
+
+  .trap-section {
+    min-height: min(100svh, 980px);
+    padding-block: clamp(5rem, 9vw, 9rem);
+  }
+
+  .trap-safe-x {
+    padding-left:
+      max(
+        1rem,
+        env(safe-area-inset-left)
+      );
+
+    padding-right:
+      max(
+        1rem,
+        env(safe-area-inset-right)
+      );
+  }
+
+  .trap-safe-bottom {
+    padding-bottom:
+      max(
+        1rem,
+        env(safe-area-inset-bottom)
+      );
+  }
+
+  .trap-touch-target {
+    min-width: 44px;
+    min-height: 44px;
+
+    touch-action: manipulation;
+  }
+
+  .trap-min-screen {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
+  .trap-header-screen {
+    min-height: calc(100vh - var(--trap-header-height));
+    min-height: calc(100svh - var(--trap-header-height));
+  }
+}
+
+/* ================================================================
+   BUTTON SYSTEM
+================================================================ */
+
+@layer components {
+  .trap-button-primary,
+  .trap-button-secondary,
+  .trap-button-light,
+  .trap-button-orange {
+    display: inline-flex;
+
+    min-height: 3.25rem;
+
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+
+    border-width: 1.5px;
+    border-style: solid;
+    border-radius: 999px;
+
+    padding: 0.8rem 1.4rem;
+
+    font-size: 0.73rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.13em;
+
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    cursor: pointer;
+    touch-action: manipulation;
+
+    transition:
+      transform 300ms var(--ease-trap),
+      color 180ms ease,
+      background-color 180ms ease,
+      border-color 180ms ease,
+      box-shadow 300ms ease;
+  }
+
+  /*
+   * Dùng cả :visited để trình duyệt không tự đổi màu link.
+   */
+  .trap-button-primary,
+  .trap-button-primary:visited {
+    border-color: #011ea0;
+
+    color: #ffe53a;
+    background-color: #011ea0;
+
+    box-shadow:
+      0 9px 24px rgb(1 30 160 / 20%);
+  }
+
+  .trap-button-secondary,
+  .trap-button-secondary:visited {
+    border-color: rgb(1 30 160 / 24%);
+
+    color: #011ea0;
+    background-color: #ffffff;
+  }
+
+  .trap-button-light,
+  .trap-button-light:visited {
+    border-color: #ffffff;
+
+    color: #011ea0;
+    background-color: #ffffff;
+
+    box-shadow:
+      0 9px 24px rgb(7 17 63 / 12%);
+  }
+
+  .trap-button-orange,
+  .trap-button-orange:visited {
+    border-color: #ef4d05;
+
+    color: #ffffff;
+    background-color: #ef4d05;
+
+    box-shadow:
+      0 9px 24px rgb(239 77 5 / 20%);
+  }
+
+  /*
+   * Text và icon bên trong luôn nhận đúng màu của nút.
+   */
+  .trap-button-primary > *,
+  .trap-button-secondary > *,
+  .trap-button-light > *,
+  .trap-button-orange > * {
+    color: inherit;
+  }
+
+  .trap-button-primary svg,
+  .trap-button-secondary svg,
+  .trap-button-light svg,
+  .trap-button-orange svg {
+    flex: 0 0 auto;
+    color: currentColor;
+  }
+
+  .trap-button-primary:active,
+  .trap-button-secondary:active,
+  .trap-button-light:active,
+  .trap-button-orange:active {
+    transform: scale(0.97);
+  }
+
+  .trap-button-primary:disabled,
+  .trap-button-secondary:disabled,
+  .trap-button-light:disabled,
+  .trap-button-orange:disabled {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* ================================================================
+   DESKTOP HOVER STATES
+================================================================ */
+
+@media (hover: hover) and (pointer: fine) {
+  .trap-button-primary:hover {
+    border-color: #ef4d05;
+
+    color: #ffffff;
+    background-color: #ef4d05;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+      0 12px 30px rgb(239 77 5 / 22%);
+  }
+
+  .trap-button-secondary:hover {
+    border-color: #011ea0;
+
+    color: #ffe53a;
+    background-color: #011ea0;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+      0 10px 28px rgb(1 30 160 / 18%);
+  }
+
+  .trap-button-light:hover {
+    border-color: #ffe53a;
+
+    color: #011ea0;
+    background-color: #ffe53a;
+
+    transform: translateY(-3px);
+  }
+
+  .trap-button-orange:hover {
+    border-color: #011ea0;
+
+    color: #ffe53a;
+    background-color: #011ea0;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+      0 12px 30px rgb(1 30 160 / 22%);
+  }
+}
+
+/* ================================================================
+   PHOTO / MEDIA
+================================================================ */
+
+@layer components {
+  .trap-photo {
+    position: relative;
+    overflow: hidden;
+
+    min-width: 0;
+
+    background: #fff9d7;
+
+    isolation: isolate;
+  }
+
+  .trap-photo img,
+  .trap-photo video {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transform: translateZ(0);
+
+    transition:
+      transform 900ms var(--ease-trap),
+      filter 500ms ease;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .trap-photo img,
+  .group:hover .trap-photo video {
+    transform: scale(1.045);
+  }
+}
+
+/* ================================================================
+   MARQUEE
+================================================================ */
+
+@layer components {
+  .trap-marquee {
+    overflow: hidden;
+
+    white-space: nowrap;
+  }
+
+  .trap-marquee-track {
+    display: inline-flex;
+
+    min-width: max-content;
+
+    animation:
+      trap-marquee 28s linear infinite;
+
+    will-change: transform;
+  }
+}
+
+@keyframes trap-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ================================================================
+   DECORATIVE UTILITIES
+================================================================ */
+
+@layer components {
+  .trap-grid-lines {
+    background-image:
+      linear-gradient(
+        rgb(1 30 160 / 8%) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        rgb(1 30 160 / 8%) 1px,
+        transparent 1px
+      );
+
+    background-size: 48px 48px;
+  }
+
+  .trap-noise {
+    position: relative;
+  }
+
+  .trap-noise::after {
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    content: "";
+
+    opacity: 0.045;
+
+    background-image:
+      radial-gradient(
+        circle at 20% 20%,
+        currentColor 0 1px,
+        transparent 1px
+      ),
+      radial-gradient(
+        circle at 80% 60%,
+        currentColor 0 1px,
+        transparent 1px
+      );
+
+    background-size:
+      19px 19px,
+      23px 23px;
+  }
+
+  .trap-glass {
+    border:
+      1px solid
+      rgb(255 255 255 / 30%);
+
+    background:
+      rgb(255 255 255 / 84%);
+
+    box-shadow:
+      0 22px 70px
+      rgb(7 17 63 / 16%);
+
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+  }
+
+  .trap-progress {
+    transform:
+      scaleX(
+        var(--scroll-progress, 0)
+      );
+
+    transform-origin:
+      left center;
+
+    will-change: transform;
+  }
+}
+
+/* ================================================================
+   HORIZONTAL MOBILE SCROLLER
+================================================================ */
+
+@layer components {
+  .trap-horizontal-scroll {
+    display: flex;
+    gap: 1rem;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    overscroll-behavior-x: contain;
+
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1rem;
+
+    touch-action: pan-x;
+
+    scrollbar-width: none;
+
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .trap-horizontal-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .trap-horizontal-item {
+    flex: 0 0 min(82vw, 360px);
+
+    min-width: 0;
+
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+}
+
+/* ================================================================
+   FORMS
+================================================================ */
+
+@layer components {
+  .trap-input {
+    width: 100%;
+    min-height: 52px;
+
+    border:
+      1px solid
+      rgb(1 30 160 / 16%);
+
+    border-radius: 0;
+
+    padding:
+      0.85rem
+      1rem;
+
+    color: #07113f;
+    background: #ffffff;
+
+    outline: none;
+
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .trap-input::placeholder {
+    color:
+      rgb(7 17 63 / 38%);
+  }
+
+  .trap-input:focus {
+    border-color: #011ea0;
+
+    box-shadow:
+      0 0 0 4px
+      rgb(1 30 160 / 9%);
+  }
+
+  .trap-input:disabled {
+    color:
+      rgb(7 17 63 / 45%);
+
+    background: #f7f2e6;
+  }
+}
+
+/* ================================================================
+   TABLET / MOBILE
+================================================================ */
+
+@media (max-width: 1023px) {
+  html {
+    scroll-snap-type: none !important;
+  }
+
+  .trap-section {
+    min-height: auto;
+  }
+
+  .trap-kicker::before {
+    width: 2rem;
+  }
+
+  .trap-horizontal-scroll {
+    padding-bottom:
+      max(
+        0.5rem,
+        env(safe-area-inset-bottom)
+      );
+  }
+}
+
+@media (max-width: 639px) {
+  :root {
+    --trap-header-height: 112px;
+  }
+
+  html {
+    scroll-padding-top: 112px;
+  }
+
+  .trap-title {
+    font-size: clamp(2.8rem, 15vw, 5rem);
+    line-height: 0.84;
+  }
+
+  .trap-button-primary,
+  .trap-button-secondary,
+  .trap-button-light,
+  .trap-button-orange {
+    min-height: 52px;
+
+    padding-inline: 1.25rem;
+
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+  }
+}
+
+/* ================================================================
+   SAFARI / STANDALONE MODE
+================================================================ */
+
+@supports (-webkit-touch-callout: none) {
+  body {
+    min-height: -webkit-fill-available;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+@media (display-mode: standalone) {
+  body {
+    padding-top:
+      env(safe-area-inset-top);
+  }
+}
+
+/* ================================================================
+   REDUCED MOTION
+================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+    scroll-snap-type: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+
+    scroll-behavior: auto !important;
+
+    transition-duration: 0.01ms !important;
+  }
+
+  html.js :where([class*="taos:"]) {
+    visibility: visible !important;
+
+    opacity: 1 !important;
+
+    transform: none !important;
+  }
+
+  .trap-marquee-track {
+    animation: none !important;
+  }
+}
+
+/* ================================================================
+   PRINT
+================================================================ */
+
+@media print {
+  header,
+  footer,
+  nav,
+  button,
+  .trap-progress {
+    display: none !important;
+  }
+
+  html,
+  body {
+    color: #000000;
+    background: #ffffff;
+  }
+
+  a {
+    color: #000000;
+    text-decoration: underline;
+  }
+
+  img {
+    break-inside: avoid;
+  }
+}
+
+/* TRAP FIXED LANGUAGE BAR — START */
+
+:root {
+  --trap-language-bar-height: 46px;
+}
+
+/*
+ * A dedicated utility bar prevents the language selector from covering
+ * navigation, forms, buttons or floating actions.
+ */
+body {
+  padding-top: var(--trap-language-bar-height);
+}
+
+.trap-language-bar {
+  position: fixed;
+  z-index: 250;
+  inset: 0 0 auto;
+  height: var(--trap-language-bar-height);
+  border-bottom: 1px solid rgb(1 30 160 / 10%);
+  background: rgb(255 255 255 / 96%);
+  box-shadow: 0 7px 24px rgb(7 17 63 / 7%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.trap-language-bar__inner {
+  display: flex;
+  width: 100%;
+  max-width: 1680px;
+  height: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  margin-inline: auto;
+  padding-inline:
+    max(1rem, env(safe-area-inset-left))
+    max(1rem, env(safe-area-inset-right));
+}
+
+.trap-language-switcher {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 0.2rem;
+  border: 1px solid rgb(1 30 160 / 14%);
+  border-radius: 999px;
+  padding: 0.2rem;
+  color: #011ea0;
+  background: #ffffff;
+}
+
+.trap-language-switcher__icon {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 999px;
+  color: #011ea0;
+  background: #eef1ff;
+}
+
+.trap-language-switcher__button {
+  display: grid;
+  min-width: 42px;
+  min-height: 30px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  padding-inline: 0.7rem;
+  color: #011ea0;
+  background: transparent;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.trap-language-switcher__button:hover {
+  background: #eef1ff;
+}
+
+.trap-language-switcher__button.is-active {
+  color: #ffe53a;
+  background: #011ea0;
+  box-shadow: 0 5px 14px rgb(1 30 160 / 18%);
+}
+
+/*
+ * Existing sticky headers now stop below the language utility bar.
+ */
+#root .sticky.top-0 {
+  top: var(--trap-language-bar-height) !important;
+}
+
+/*
+ * Admin sidebar and mobile drawer also begin below the utility bar.
+ */
+.admin-page > aside {
+  top: var(--trap-language-bar-height) !important;
+}
+
+@media (min-width: 1024px) {
+  .admin-page > aside {
+    height:
+      calc(
+        100vh -
+        var(--trap-language-bar-height)
+      ) !important;
+  }
+}
+
+@media (max-width: 639px) {
+  :root {
+    --trap-language-bar-height: 42px;
+  }
+
+  .trap-language-bar__inner {
+    padding-inline:
+      max(0.75rem, env(safe-area-inset-left))
+      max(0.75rem, env(safe-area-inset-right));
+  }
+
+  .trap-language-switcher {
+    min-height: 34px;
+  }
+
+  .trap-language-switcher__icon {
+    display: none;
+  }
+
+  .trap-language-switcher__button {
+    min-width: 40px;
+    min-height: 28px;
+    padding-inline: 0.6rem;
+    font-size: 0.64rem;
+  }
+}
+
+/* TRAP FIXED LANGUAGE BAR — END */

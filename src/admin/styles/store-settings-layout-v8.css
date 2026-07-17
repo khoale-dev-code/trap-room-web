@@ -1,0 +1,262 @@
+
+/*
+ * TRAP Room Store Settings Layout V8
+ * One clear content column + one compact preview column.
+ * Prevents narrow cards, runaway Google Maps height and dense multi-column UI.
+ */
+
+[data-store-settings-v8="true"] {
+  --store-v8-gap: clamp(1rem, 1.8vw, 1.5rem);
+  --store-v8-radius: 1.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+[data-store-settings-v8="true"] .store-settings-layout {
+  display: grid !important;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 21rem) !important;
+  align-items: start !important;
+  gap: var(--store-v8-gap) !important;
+}
+
+[data-store-settings-v8="true"] .store-settings-main {
+  display: grid !important;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-content: start !important;
+  gap: var(--store-v8-gap) !important;
+}
+
+[data-store-settings-v8="true"] .store-settings-main > *,
+[data-store-settings-v8="true"] .store-settings-location-stack,
+[data-store-settings-v8="true"] .store-settings-module,
+[data-store-settings-v8="true"] [data-store-homepage-media],
+[data-store-settings-v8="true"] [data-store-google-map],
+[data-store-settings-v8="true"] [data-store-opening-hours] {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  grid-column: 1 / -1 !important;
+  align-self: start !important;
+}
+
+[data-store-settings-v8="true"] .store-settings-location-stack {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: var(--store-v8-gap) !important;
+}
+
+[data-store-settings-v8="true"] .store-settings-preview {
+  position: sticky !important;
+  top: 5.75rem !important;
+  width: 100%;
+  min-width: 0;
+  max-height: calc(var(--admin-viewport-height, 100dvh) - 7rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+[data-store-settings-v8="true"] .store-settings-preview > * {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Keep ordinary form sections readable without creating a third column. */
+[data-store-settings-v8="true"] .admin-card,
+[data-store-settings-v8="true"] .admin-card-flat,
+[data-store-settings-v8="true"] [data-google-maps-editor="true"],
+[data-store-settings-v8="true"] [data-opening-hours-editor="true"],
+[data-store-settings-v8="true"] [data-homepage-media-editor] {
+  min-width: 0;
+  border-radius: var(--store-v8-radius);
+}
+
+[data-store-settings-v8="true"] .admin-card > .grid,
+[data-store-settings-v8="true"] .admin-card-flat > .grid {
+  min-width: 0;
+}
+
+/*
+ * Google Maps is always a vertical editor:
+ * fields first, preview second. This prevents the narrow two-column card
+ * and the very tall empty area visible in the previous layout.
+ */
+[data-store-settings-v8="true"] [data-google-maps-editor="true"] > div:last-child {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-items: start !important;
+  gap: 1.25rem !important;
+}
+
+[data-store-settings-v8="true"] [data-google-maps-editor="true"] textarea,
+[data-store-settings-v8="true"] [data-google-maps-editor="true"] input {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+[data-store-settings-v8="true"] [data-google-maps-editor="true"] iframe {
+  display: block;
+  width: 100% !important;
+  height: clamp(17rem, 34vw, 24rem) !important;
+  min-height: 17rem !important;
+  max-height: 24rem !important;
+  border: 0;
+}
+
+[data-store-settings-v8="true"] [data-google-maps-editor="true"] .grid.sm\:grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+/* Homepage image editor remains master-detail only on large screens. */
+[data-store-settings-v8="true"]
+  [data-homepage-media-editor]
+  .homepage-media-editor__body {
+  grid-template-columns: minmax(12.5rem, 14rem) minmax(0, 1fr) !important;
+}
+
+[data-store-settings-v8="true"]
+  [data-homepage-media-editor]
+  .homepage-media-editor__preview-shell.is-story {
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+/* Opening hours: no more than two schedule cards. */
+[data-store-settings-v8="true"] [data-opening-hours-editor="true"] {
+  overflow: hidden;
+}
+
+[data-store-settings-v8="true"]
+  [data-opening-hours-editor="true"]
+  > div:last-child {
+  min-width: 0;
+}
+
+/* Logo and cover remain a simple two-item row only when enough room exists. */
+[data-store-settings-v8="true"]
+  [data-store-section="Logo and cover"]
+  .grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+/* Do not let legacy width or height utilities stretch sections. */
+[data-store-settings-v8="true"] [class*="min-h-"],
+[data-store-settings-v8="true"] [class*="h-full"] {
+  min-height: 0;
+}
+
+[data-store-settings-v8="true"] textarea {
+  resize: vertical;
+}
+
+@media (max-width: 79.999rem) {
+  [data-store-settings-v8="true"] .store-settings-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  [data-store-settings-v8="true"] .store-settings-preview {
+    position: static !important;
+    top: auto !important;
+    order: -1;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  [data-store-settings-v8="true"] .store-settings-preview > * {
+    max-width: 38rem;
+  }
+
+  [data-store-settings-v8="true"]
+    [data-homepage-media-editor]
+    .homepage-media-editor__body {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  [data-store-settings-v8="true"]
+    [data-homepage-media-editor]
+    .homepage-media-editor__slot-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 47.999rem) {
+  [data-store-settings-v8="true"] {
+    --store-v8-gap: 0.85rem;
+    --store-v8-radius: 1.15rem;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  [data-store-settings-v8="true"] .store-settings-preview {
+    order: 0;
+  }
+
+  [data-store-settings-v8="true"] .store-settings-preview > * {
+    max-width: none;
+  }
+
+  [data-store-settings-v8="true"] .admin-card,
+  [data-store-settings-v8="true"] .admin-card-flat,
+  [data-store-settings-v8="true"] [data-google-maps-editor="true"],
+  [data-store-settings-v8="true"] [data-opening-hours-editor="true"],
+  [data-store-settings-v8="true"] [data-homepage-media-editor] {
+    border-radius: var(--store-v8-radius) !important;
+  }
+
+  [data-store-settings-v8="true"] .admin-card,
+  [data-store-settings-v8="true"] .admin-card-flat {
+    padding: 1rem !important;
+  }
+
+  [data-store-settings-v8="true"]
+    [data-google-maps-editor="true"]
+    > div:last-child {
+    gap: 0.9rem !important;
+    padding: 1rem !important;
+  }
+
+  [data-store-settings-v8="true"]
+    [data-google-maps-editor="true"]
+    .grid.sm\:grid-cols-3 {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  [data-store-settings-v8="true"] [data-google-maps-editor="true"] iframe {
+    height: 17rem !important;
+    min-height: 17rem !important;
+  }
+
+  [data-store-settings-v8="true"]
+    [data-store-section="Logo and cover"]
+    .grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  [data-store-settings-v8="true"]
+    [data-homepage-media-editor]
+    .homepage-media-editor__slot-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  [data-store-settings-v8="true"] input,
+  [data-store-settings-v8="true"] textarea,
+  [data-store-settings-v8="true"] select {
+    min-width: 0 !important;
+    font-size: 1rem !important;
+  }
+
+  [data-store-settings-v8="true"] button,
+  [data-store-settings-v8="true"] a {
+    max-width: 100%;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  [data-store-settings-v8="true"] .store-settings-preview,
+  [data-store-settings-v8="true"] [data-homepage-media-editor] {
+    -webkit-overflow-scrolling: touch;
+  }
+}

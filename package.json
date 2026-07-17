@@ -1,0 +1,45 @@
+{
+  "name": "trap-room-web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n API,WEB \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:web": "vite --host 0.0.0.0",
+    "dev:api": "node --watch server/index.js",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "start": "node server/index.js",
+    "check:db": "node scripts/check-mongo.mjs",
+    "seed": "node server/seed.js",
+    "seed:admin-demo": "node server/scripts/seedAdminDemo.js",
+    "clear:admin-demo": "node server/scripts/seedAdminDemo.js --clear"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.2",
+    "cloudinary": "^2.10.0",
+    "concurrently": "^9.2.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2",
+    "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^0.468.0",
+    "mongoose": "^8.24.1",
+    "multer": "^2.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "^7.18.1",
+    "streamifier": "^0.1.1",
+    "tailwindcss": "^4.3.2",
+    "taos": "^2.0.1",
+    "vite": "^6.0.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}

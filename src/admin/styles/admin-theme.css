@@ -1,0 +1,397 @@
+:root {
+  --admin-blue: #011ea0;
+  --admin-yellow: #ffe53a;
+  --admin-orange: #ef4d05;
+  --admin-ink: #07113f;
+  --admin-bg: #f5f7fb;
+  --admin-surface: #ffffff;
+  --admin-soft-blue: #eef1ff;
+  --admin-soft-yellow: #fff9d7;
+  --admin-soft-orange: #fff0e9;
+  --admin-border: rgb(1 30 160 / 11%);
+  --admin-shadow: 0 16px 48px rgb(7 17 63 / 8%);
+}
+
+.admin-page {
+  min-width: 0;
+  color: var(--admin-ink);
+  background: var(--admin-bg);
+}
+
+.admin-card {
+  min-width: 0;
+  border: 1px solid var(--admin-border);
+  border-radius: 1.25rem;
+  background: var(--admin-surface);
+  box-shadow: var(--admin-shadow);
+}
+
+.admin-card-flat {
+  min-width: 0;
+  border: 1px solid var(--admin-border);
+  border-radius: 1rem;
+  background: var(--admin-surface);
+}
+
+.admin-input,
+.admin-select,
+.admin-textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgb(1 30 160 / 14%);
+  border-radius: 0.9rem;
+  color: var(--admin-ink);
+  background: #fff;
+  outline: none;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.admin-input,
+.admin-select {
+  min-height: 48px;
+  padding: 0.75rem 0.9rem;
+}
+
+.admin-textarea {
+  min-height: 118px;
+  padding: 0.9rem;
+  resize: vertical;
+}
+
+.admin-input::placeholder,
+.admin-textarea::placeholder {
+  color: rgb(7 17 63 / 36%);
+}
+
+.admin-input:focus,
+.admin-select:focus,
+.admin-textarea:focus {
+  border-color: var(--admin-blue);
+  box-shadow: 0 0 0 4px rgb(1 30 160 / 8%);
+}
+
+.admin-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: rgb(7 17 63 / 62%);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-button-primary,
+.admin-button-secondary,
+.admin-button-danger,
+.admin-icon-button {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transition:
+    transform 180ms ease,
+    color 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.admin-button-primary {
+  border: 1px solid var(--admin-blue);
+  padding-inline: 1.25rem;
+  color: var(--admin-yellow);
+  background: var(--admin-blue);
+  box-shadow: 0 9px 24px rgb(1 30 160 / 16%);
+}
+
+.admin-button-secondary {
+  border: 1px solid rgb(1 30 160 / 16%);
+  padding-inline: 1.25rem;
+  color: var(--admin-blue);
+  background: #fff;
+}
+
+.admin-button-danger {
+  border: 1px solid rgb(185 28 28 / 18%);
+  padding-inline: 1.25rem;
+  color: #b91c1c;
+  background: #fff1f2;
+}
+
+.admin-icon-button {
+  width: 44px;
+  min-width: 44px;
+  padding: 0;
+  border: 1px solid rgb(1 30 160 / 14%);
+  color: var(--admin-blue);
+  background: #fff;
+}
+
+.admin-button-primary > *,
+.admin-button-secondary > *,
+.admin-button-danger > *,
+.admin-icon-button > * {
+  color: inherit;
+}
+
+.admin-button-primary:disabled,
+.admin-button-secondary:disabled,
+.admin-button-danger:disabled,
+.admin-icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
+}
+
+.admin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(1 30 160 / 25%) transparent;
+}
+
+.admin-scrollbar::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgb(1 30 160 / 22%);
+}
+
+.admin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-badge {
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding-inline: 0.7rem;
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-mobile-panel {
+  max-height: calc(100vh - 72px);
+  max-height: calc(100dvh - 72px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .admin-button-primary:hover {
+    border-color: var(--admin-orange);
+    color: #fff;
+    background: var(--admin-orange);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgb(239 77 5 / 18%);
+  }
+
+  .admin-button-secondary:hover,
+  .admin-icon-button:hover {
+    border-color: var(--admin-blue);
+    color: var(--admin-yellow);
+    background: var(--admin-blue);
+    transform: translateY(-2px);
+  }
+
+  .admin-button-danger:hover {
+    color: #fff;
+    background: #b91c1c;
+    transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 1023px) {
+  .admin-card {
+    border-radius: 1rem;
+  }
+}
+
+@media (max-width: 639px) {
+  .admin-button-primary,
+  .admin-button-secondary,
+  .admin-button-danger {
+    min-height: 48px;
+  }
+
+  .admin-input,
+  .admin-select {
+    min-height: 50px;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  .admin-input,
+  .admin-select,
+  .admin-textarea {
+    font-size: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-button-primary,
+  .admin-button-secondary,
+  .admin-button-danger,
+  .admin-icon-button {
+    transition: none;
+  }
+}
+
+/* TRAP ADMIN SEARCH FIX — START */
+
+/*
+ * Tailwind utilities such as pl-11 were being overridden by the
+ * unlayered .admin-input padding declaration. Search icons therefore
+ * sat on top of placeholder text.
+ */
+.admin-input.pl-11,
+.admin-input.admin-search-input,
+input.admin-input[class~="pl-11"] {
+  padding-left: 3rem !important;
+}
+
+.admin-input.pr-11,
+input.admin-input[class~="pr-11"] {
+  padding-right: 3rem !important;
+}
+
+label.relative > svg.absolute.pointer-events-none {
+  z-index: 2;
+  left: 1rem !important;
+  color: rgb(1 30 160 / 45%);
+}
+
+.admin-input.pl-11::placeholder,
+.admin-input.admin-search-input::placeholder {
+  color: rgb(7 17 63 / 38%);
+  opacity: 1;
+}
+
+/*
+ * Keep search input text vertically aligned on Chrome and Safari.
+ */
+.admin-input {
+  line-height: 1.35;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .admin-input.pl-11,
+  .admin-input.admin-search-input {
+    padding-left: 3rem !important;
+  }
+}
+
+/* TRAP ADMIN SEARCH FIX — END */
+
+/* TRAP ADMIN FINAL INPUT/SIDEBAR FIX — START */
+
+/*
+ * These rules intentionally use dedicated classes and !important.
+ * admin-theme.css is unlayered, so it otherwise overrides Tailwind
+ * display and padding utilities.
+ */
+
+.admin-sidebar-mobile-only {
+  display: grid !important;
+}
+
+.admin-sidebar-desktop-only {
+  display: none !important;
+}
+
+@media (min-width: 1024px) {
+  .admin-sidebar-mobile-only {
+    display: none !important;
+  }
+
+  .admin-sidebar-desktop-only {
+    display: grid !important;
+  }
+}
+
+.admin-search-control {
+  padding-left: 3.25rem !important;
+  padding-right: 1rem !important;
+}
+
+.admin-search-icon {
+  z-index: 2;
+  left: 1.1rem !important;
+  bottom: 50% !important;
+  width: 1.05rem;
+  height: 1.05rem;
+  color: rgb(1 30 160 / 48%);
+  transform: translateY(50%);
+}
+
+.admin-search-control::placeholder {
+  color: rgb(7 17 63 / 38%);
+  opacity: 1;
+}
+
+.admin-currency-field {
+  display: block;
+  width: 100%;
+}
+
+.admin-vnd-input {
+  width: 100%;
+  padding-left: 1rem !important;
+  padding-right: 5.25rem !important;
+  text-align: right;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.admin-vnd-suffix {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  min-width: 3.1rem;
+  min-height: 1.8rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: #011ea0;
+  background: #eef1ff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+@media (max-width: 639px) {
+  .admin-vnd-input {
+    padding-right: 4.75rem !important;
+  }
+
+  .admin-vnd-suffix {
+    right: 0.75rem;
+    min-width: 2.9rem;
+    font-size: 0.63rem;
+  }
+}
+
+/* TRAP ADMIN FINAL INPUT/SIDEBAR FIX — END */

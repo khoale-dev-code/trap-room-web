@@ -1,0 +1,132 @@
+
+/*
+ * TRAP Room Store settings V4
+ * Removes visual duplication and keeps the long Admin form readable.
+ */
+
+[data-store-settings-page] {
+  width: 100%;
+  min-width: 0;
+}
+
+[data-store-settings-page] .store-settings-layout {
+  width: 100%;
+  min-width: 0;
+  align-items: start;
+}
+
+[data-store-settings-page] .store-settings-main {
+  min-width: 0;
+  align-content: start;
+}
+
+[data-store-settings-page] .store-settings-main > *,
+[data-store-settings-page] .store-settings-module,
+[data-store-settings-page] .store-settings-module > * {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+[data-store-settings-page] .store-settings-location-stack {
+  display: grid;
+  min-width: 0;
+  gap: 1.5rem;
+}
+
+[data-store-settings-page] .store-settings-module {
+  scroll-margin-top: 6.5rem;
+}
+
+[data-store-settings-page] .store-settings-preview {
+  position: sticky;
+  top: 5.75rem;
+  min-width: 0;
+  max-height: calc(var(--admin-viewport-height, 100dvh) - 7rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+[data-store-settings-page] .store-settings-preview > .admin-card {
+  overflow: hidden;
+}
+
+[data-store-settings-page] .store-settings-preview img {
+  max-width: 100%;
+}
+
+/*
+ * Old Google Maps inputs are removed in source. These selectors are a final
+ * guard for an older field definition that may remain after manual edits.
+ */
+[data-store-settings-page] label:has([name="googleMapsUrl"]),
+[data-store-settings-page] label:has([name="googleMapsEmbedUrl"]),
+[data-store-settings-page] label:has([name="googleMapEmbedUrl"]),
+[data-store-settings-page] label:has([name="mapEmbedUrl"]),
+[data-store-settings-page] label:has([name="openingHours"]) {
+  display: none !important;
+}
+
+[data-store-settings-page]
+  [data-store-section="Social media"]
+  .mt-6.grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+[data-store-settings-page]
+  [data-store-section="Social media"]
+  label {
+  grid-column: 1 / -1;
+}
+
+[data-store-settings-page]
+  [data-store-google-map]
+  > section,
+[data-store-settings-page]
+  [data-store-opening-hours]
+  > section {
+  margin: 0;
+}
+
+@media (max-width: 79.999rem) {
+  [data-store-settings-page] .store-settings-preview {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 47.999rem) {
+  [data-store-settings-page] {
+    padding-bottom:
+      max(1rem, env(safe-area-inset-bottom));
+  }
+
+  [data-store-settings-page] .store-settings-location-stack {
+    gap: 1rem;
+  }
+
+  [data-store-settings-page] .admin-card,
+  [data-store-settings-page] .admin-card-flat,
+  [data-store-settings-page] [data-store-google-map] > section,
+  [data-store-settings-page] [data-store-opening-hours] > section {
+    border-radius: 1.25rem;
+  }
+
+  [data-store-settings-page] .store-settings-preview {
+    order: 2;
+  }
+
+  [data-store-settings-page] input,
+  [data-store-settings-page] textarea,
+  [data-store-settings-page] select {
+    font-size: 1rem !important;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  [data-store-settings-page] .store-settings-preview {
+    -webkit-overflow-scrolling: touch;
+  }
+}

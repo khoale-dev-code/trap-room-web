@@ -1,0 +1,153 @@
+
+/*
+ * TRAP Room Admin media actions V9
+ * Larger upload actions and cleaner Logo/Cover layout.
+ */
+
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"] {
+  overflow: hidden;
+}
+
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  > .grid,
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  .mt-6.grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: clamp(1rem, 1.8vw, 1.4rem) !important;
+}
+
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  .rounded-2xl,
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  .rounded-\[1\.25rem\],
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  .rounded-\[1\.5rem\] {
+  min-width: 0;
+  overflow: hidden;
+}
+
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  img {
+  width: 100%;
+  height: clamp(13rem, 22vw, 20rem);
+  object-fit: contain !important;
+  object-position: center !important;
+  padding: clamp(0.45rem, 0.8vw, 0.75rem);
+  background:
+    linear-gradient(
+      145deg,
+      rgb(255 229 58 / 10%),
+      rgb(1 30 160 / 8%)
+    ),
+    #f7f8ff;
+}
+
+/*
+ * The upload trigger may be a button or a label wrapping input[type=file].
+ * Both receive the same large touch-friendly treatment.
+ */
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  button,
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  [role="button"],
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  label:has(input[type="file"]) {
+  display: inline-flex !important;
+  width: 100% !important;
+  min-height: 3.65rem !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.7rem !important;
+  border-radius: 999px !important;
+  padding: 0.9rem 1.35rem !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.11em !important;
+  line-height: 1.15 !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
+  cursor: pointer;
+}
+
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  button svg,
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  [role="button"] svg,
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  label:has(input[type="file"]) svg {
+  width: 1.15rem !important;
+  height: 1.15rem !important;
+  flex: 0 0 auto;
+}
+
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  button:hover,
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  [role="button"]:hover,
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  label:has(input[type="file"]):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgb(1 30 160 / 16%);
+}
+
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  button:focus-visible,
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  [role="button"]:focus-visible,
+[data-store-settings-page="true"]
+  [data-store-section="Logo and cover"]
+  label:has(input[type="file"]):focus-within {
+  outline: 3px solid #ef4d05;
+  outline-offset: 3px;
+}
+
+@media (max-width: 47.999rem) {
+  [data-store-settings-page="true"]
+    [data-store-section="Logo and cover"]
+    > .grid,
+  [data-store-settings-page="true"]
+    [data-store-section="Logo and cover"]
+    .mt-6.grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0.9rem !important;
+  }
+
+  [data-store-settings-page="true"]
+    [data-store-section="Logo and cover"]
+    img {
+    height: clamp(12rem, 68vw, 18rem);
+  }
+
+  [data-store-settings-page="true"]
+    [data-store-section="Logo and cover"]
+    button,
+  [data-store-settings-page="true"]
+    [data-store-section="Logo and cover"]
+    [role="button"],
+  [data-store-settings-page="true"]
+    [data-store-section="Logo and cover"]
+    label:has(input[type="file"]) {
+    min-height: 3.8rem !important;
+    padding-inline: 1rem !important;
+    font-size: 0.74rem !important;
+  }
+}

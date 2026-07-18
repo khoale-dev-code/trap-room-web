@@ -162,6 +162,13 @@ request,
     me() {
       return request("/auth/me");
     },
+
+    changePassword(payload) {
+      return request("/auth/change-password", {
+        method: "PATCH",
+        body: JSON.stringify(payload),
+      });
+    },
   },
 
   getPublicStore() {

@@ -39,7 +39,8 @@ function cleanShopPayload(input = {}) {
       "Google Maps Embed URL"
     ),
     logoUrl: text(input.logoUrl) || "/trap-logo.png",
-    coverImageUrl: text(input.coverImageUrl),
+    
+    faviconUrl: text(input.faviconUrl),coverImageUrl: text(input.coverImageUrl),
     heroImages,
   };
 }

@@ -4,6 +4,10 @@ import { env } from "../config/env.js";
 import { requireAdmin } from "../middleware/requireAdmin.js";
 import { Employee } from "../models/Employee.js";
 import {
+  OWNER_CREDENTIAL_KEY,
+  OwnerCredential,
+} from "../models/OwnerCredential.js";
+import {
   hashPassword,
   verifyPassword,
 } from "../utils/password.js";
@@ -17,8 +21,6 @@ function cookieOptions() {
   return {
     httpOnly: true,
     secure: production,
-    // Vercel proxies /api through the same browser origin.
-    // Lax is more reliable on Safari than a third-party None cookie.
     sameSite: "lax",
     maxAge:
       1000 * 60 * 60 * 24 * 7,
@@ -37,7 +39,8 @@ function clearCookieOptions() {
 
 function ownerAccount() {
   return {
-    username: env.admin.username,
+    username:
+      env.admin.username,
     displayName:
       env.admin.username,
     role: "owner",
@@ -46,9 +49,44 @@ function ownerAccount() {
   };
 }
 
-function signSession(payload) {
+function staffAccount(employee) {
+  return {
+    username:
+      employee.username,
+    displayName:
+      employee.fullName,
+    role:
+      employee.role,
+    position:
+      employee.position,
+    employeeId:
+      String(employee._id),
+    employeeCode:
+      employee.employeeCode,
+    accountType: "staff",
+    permissions:
+      employee.permissions || [],
+    mustChangePassword:
+      Boolean(
+        employee.mustChangePassword
+      ),
+  };
+}
+
+function signOwnerSession(
+  passwordVersion = 0
+) {
   return jwt.sign(
-    payload,
+    {
+      username:
+        env.admin.username,
+      displayName:
+        env.admin.username,
+      role: "owner",
+      accountType: "owner",
+      passwordVersion:
+        Number(passwordVersion || 0),
+    },
     env.admin.jwtSecret,
     {
       expiresIn: "7d",
@@ -56,29 +94,96 @@ function signSession(payload) {
   );
 }
 
-router.use((req, res, next) => {
-  res.set(
-    "Cache-Control",
-    "no-store, no-cache, must-revalidate"
+function signStaffSession(admin) {
+  return jwt.sign(
+    {
+      employeeId:
+        admin.employeeId,
+      username:
+        admin.username,
+      displayName:
+        admin.displayName,
+      role:
+        admin.role,
+      accountType: "staff",
+    },
+    env.admin.jwtSecret,
+    {
+      expiresIn: "7d",
+    }
   );
-  res.set("Pragma", "no-cache");
-  res.set("Expires", "0");
-  next();
-});
+}
+
+async function getOwnerCredential() {
+  return OwnerCredential.findOne({
+    key: OWNER_CREDENTIAL_KEY,
+  }).select(
+    "+passwordHash +passwordSalt"
+  );
+}
+
+async function verifyOwnerPassword(
+  password,
+  credential = null
+) {
+  if (credential) {
+    return verifyPassword(
+      password,
+      credential.passwordSalt,
+      credential.passwordHash
+    );
+  }
+
+  return (
+    String(password || "") ===
+    String(env.admin.password || "")
+  );
+}
+
+function setSessionCookie(
+  res,
+  token
+) {
+  res.cookie(
+    env.admin.cookieName,
+    token,
+    cookieOptions()
+  );
+}
+
+router.use(
+  (req, res, next) => {
+    res.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate"
+    );
+    res.set(
+      "Pragma",
+      "no-cache"
+    );
+    res.set(
+      "Expires",
+      "0"
+    );
+    next();
+  }
+);
 
 router.post(
   "/login",
   async (req, res, next) => {
     try {
-      const username = String(
-        req.body?.username || ""
-      )
-        .trim()
-        .toLowerCase();
+      const username =
+        String(
+          req.body?.username || ""
+        )
+          .trim()
+          .toLowerCase();
 
-      const password = String(
-        req.body?.password || ""
-      );
+      const password =
+        String(
+          req.body?.password || ""
+        );
 
       const ownerUsername =
         String(
@@ -87,61 +192,58 @@ router.post(
           .trim()
           .toLowerCase();
 
-      if (!username || !password) {
-        return res.status(400).json({
-          message:
-            "Vui lòng nhập tài khoản và mật khẩu.",
-          code: "AUTH_FIELDS_REQUIRED",
-        });
+      if (
+        !username ||
+        !password
+      ) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "Please enter both username and password.",
+            code:
+              "AUTH_FIELDS_REQUIRED",
+          });
       }
 
-      /*
-       * Owner and staff authentication must not fall through
-       * to one another. A wrong owner password returns 401
-       * immediately instead of querying a possibly legacy
-       * Employee record with the same username.
-       */
       if (
         username ===
         ownerUsername
       ) {
-        if (
-          password !==
-          String(
-            env.admin.password || ""
-          )
-        ) {
+        const credential =
+          await getOwnerCredential();
+
+        const valid =
+          await verifyOwnerPassword(
+            password,
+            credential
+          );
+
+        if (!valid) {
           return res
             .status(401)
             .json({
               message:
-                "Sai tài khoản hoặc mật khẩu.",
+                "Incorrect username or password.",
               code:
                 "AUTH_INVALID_CREDENTIALS",
             });
         }
 
-        const admin =
-          ownerAccount();
-
         const token =
-          signSession({
-            username:
-              admin.username,
-            displayName:
-              admin.displayName,
-            role: "owner",
-            accountType: "owner",
-          });
+          signOwnerSession(
+            credential
+              ?.passwordVersion || 0
+          );
 
-        res.cookie(
-          env.admin.cookieName,
-          token,
-          cookieOptions()
+        setSessionCookie(
+          res,
+          token
         );
 
         return res.json({
-          admin,
+          admin:
+            ownerAccount(),
         });
       }
 
@@ -166,7 +268,7 @@ router.post(
           .status(401)
           .json({
             message:
-              "Sai tài khoản hoặc mật khẩu.",
+              "Incorrect username or password.",
             code:
               "AUTH_INVALID_CREDENTIALS",
           });
@@ -184,23 +286,19 @@ router.post(
           .status(401)
           .json({
             message:
-              "Sai tài khoản hoặc mật khẩu.",
+              "Incorrect username or password.",
             code:
               "AUTH_INVALID_CREDENTIALS",
           });
       }
 
-      /*
-       * Do not call employee.save() during login.
-       * Old Employee documents can be missing fields that
-       * became required later. Saving the whole document
-       * triggers unrelated schema validation and returns 500.
-       */
-      const now = new Date();
+      const now =
+        new Date();
 
       await Employee.updateOne(
         {
-          _id: employee._id,
+          _id:
+            employee._id,
         },
         {
           $set: {
@@ -213,43 +311,12 @@ router.post(
         }
       );
 
-      const admin = {
-        username:
-          employee.username,
-        displayName:
-          employee.fullName,
-        role: employee.role,
-        position:
-          employee.position,
-        employeeId:
-          String(employee._id),
-        employeeCode:
-          employee.employeeCode,
-        accountType: "staff",
-        permissions:
-          employee.permissions || [],
-        mustChangePassword:
-          Boolean(
-            employee.mustChangePassword
-          ),
-      };
+      const admin =
+        staffAccount(employee);
 
-      const token =
-        signSession({
-          employeeId:
-            admin.employeeId,
-          username:
-            admin.username,
-          displayName:
-            admin.displayName,
-          role: admin.role,
-          accountType: "staff",
-        });
-
-      res.cookie(
-        env.admin.cookieName,
-        token,
-        cookieOptions()
+      setSessionCookie(
+        res,
+        signStaffSession(admin)
       );
 
       return res.json({
@@ -259,7 +326,8 @@ router.post(
       console.error(
         "[auth/login]",
         {
-          name: error?.name,
+          name:
+            error?.name,
           code:
             error?.code ||
             "AUTH_LOGIN_FAILED",
@@ -293,7 +361,8 @@ router.get(
   requireAdmin,
   (req, res) => {
     return res.json({
-      admin: req.admin,
+      admin:
+        req.admin,
     });
   }
 );
@@ -303,21 +372,155 @@ router.patch(
   requireAdmin,
   async (req, res, next) => {
     try {
+      const currentPassword =
+        String(
+          req.body
+            ?.currentPassword || ""
+        );
+
+      const newPassword =
+        String(
+          req.body
+            ?.newPassword || ""
+        );
+
+      const confirmPassword =
+        String(
+          req.body
+            ?.confirmPassword || ""
+        );
+
       if (
-        req.admin.accountType !==
-        "staff"
+        !currentPassword ||
+        !newPassword
       ) {
         return res
           .status(400)
           .json({
             message:
-              "Tài khoản chủ cửa hàng được quản lý bằng biến môi trường.",
+              "Current and new passwords are required.",
+            code:
+              "PASSWORD_FIELDS_REQUIRED",
           });
+      }
+
+      if (
+        confirmPassword &&
+        confirmPassword !==
+          newPassword
+      ) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "Password confirmation does not match.",
+            code:
+              "PASSWORD_CONFIRMATION_MISMATCH",
+          });
+      }
+
+      if (
+        currentPassword ===
+        newPassword
+      ) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "The new password must be different from the current password.",
+            code:
+              "PASSWORD_NOT_CHANGED",
+          });
+      }
+
+      if (
+        req.admin
+          .accountType ===
+        "owner"
+      ) {
+        const currentCredential =
+          await getOwnerCredential();
+
+        const currentValid =
+          await verifyOwnerPassword(
+            currentPassword,
+            currentCredential
+          );
+
+        if (!currentValid) {
+          return res
+            .status(400)
+            .json({
+              message:
+                "The current password is incorrect.",
+              code:
+                "PASSWORD_CURRENT_INVALID",
+            });
+        }
+
+        const nextPassword =
+          await hashPassword(
+            newPassword
+          );
+
+        const nextVersion =
+          Number(
+            currentCredential
+              ?.passwordVersion || 0
+          ) + 1;
+
+        await OwnerCredential
+          .findOneAndUpdate(
+            {
+              key:
+                OWNER_CREDENTIAL_KEY,
+            },
+            {
+              $set: {
+                username:
+                  env.admin.username,
+                passwordSalt:
+                  nextPassword
+                    .passwordSalt,
+                passwordHash:
+                  nextPassword
+                    .passwordHash,
+                passwordVersion:
+                  nextVersion,
+                changedAt:
+                  new Date(),
+              },
+            },
+            {
+              new: true,
+              upsert: true,
+              setDefaultsOnInsert:
+                true,
+              runValidators:
+                true,
+            }
+          );
+
+        setSessionCookie(
+          res,
+          signOwnerSession(
+            nextVersion
+          )
+        );
+
+        return res.json({
+          ok: true,
+          message:
+            "Owner password changed successfully.",
+          admin:
+            ownerAccount(),
+        });
       }
 
       const employee =
         await Employee.findById(
-          req.admin.employeeId
+          req.admin
+            .employeeId
         ).select(
           "+passwordHash +passwordSalt"
         );
@@ -327,47 +530,93 @@ router.patch(
           .status(404)
           .json({
             message:
-              "Không tìm thấy tài khoản nhân viên.",
+              "The staff account could not be found.",
           });
       }
 
-      const valid =
+      const currentValid =
         await verifyPassword(
-          req.body
-            ?.currentPassword,
+          currentPassword,
           employee.passwordSalt,
           employee.passwordHash
         );
 
-      if (!valid) {
+      if (!currentValid) {
         return res
           .status(400)
           .json({
             message:
-              "Mật khẩu hiện tại không đúng.",
+              "The current password is incorrect.",
+            code:
+              "PASSWORD_CURRENT_INVALID",
           });
       }
 
       const nextPassword =
         await hashPassword(
-          req.body?.newPassword
+          newPassword
         );
 
-      employee.passwordHash =
-        nextPassword.passwordHash;
+      await Employee.updateOne(
+        {
+          _id:
+            employee._id,
+        },
+        {
+          $set: {
+            passwordSalt:
+              nextPassword
+                .passwordSalt,
+            passwordHash:
+              nextPassword
+                .passwordHash,
+            mustChangePassword:
+              false,
+            lastActivityAt:
+              new Date(),
+          },
+        },
+        {
+          runValidators: false,
+        }
+      );
 
-      employee.passwordSalt =
-        nextPassword.passwordSalt;
+      const refreshed =
+        await Employee.findById(
+          employee._id
+        ).lean();
 
-      employee.mustChangePassword =
-        false;
+      const admin =
+        staffAccount(
+          refreshed || employee
+        );
 
-      await employee.save();
+      setSessionCookie(
+        res,
+        signStaffSession(admin)
+      );
 
       return res.json({
         ok: true,
+        message:
+          "Password changed successfully.",
+        admin,
       });
     } catch (error) {
+      console.error(
+        "[auth/change-password]",
+        {
+          name:
+            error?.name,
+          code:
+            error?.code ||
+            "PASSWORD_CHANGE_FAILED",
+          message:
+            error?.message ||
+            "Unknown password change error",
+        }
+      );
+
       return next(error);
     }
   }

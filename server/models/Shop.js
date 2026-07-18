@@ -42,6 +42,11 @@ const shopSchema = new mongoose.Schema(
     googleMapsUrl: { type: String, default: "", trim: true },
     googleMapsEmbedUrl: { type: String, default: "", trim: true },
     logoUrl: { type: String, default: "/trap-logo.png", trim: true },
+    faviconUrl: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     coverImageUrl: { type: String, default: "", trim: true },
     heroImages: { type: [heroMediaSchema], default: [] },
   },

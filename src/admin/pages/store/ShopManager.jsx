@@ -1,4 +1,6 @@
 import {
+  Globe2,
+  CheckCircle2,
   ArrowDown,
   ArrowUp,
   ImagePlus,
@@ -18,6 +20,7 @@ import OpeningHoursEditor from "../../components/OpeningHoursEditor.jsx";
 import GoogleMapsEmbedEditor from "../../components/GoogleMapsEmbedEditor.jsx";
 import "../../styles/store-settings-refined-v4.css";
 import HomepageMediaEditor from "../../components/HomepageMediaEditor.jsx";
+import AdminPasswordCard from "../../components/AdminPasswordCard.jsx";
 import "../../styles/store-settings-layout-v8.css";
 import "../../styles/store-media-actions-v9.css";
 
@@ -368,12 +371,76 @@ export default function ShopManager({ refreshToken }) {
               />
 
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                <UploadCard
-                  title="Store logo"
-                  value={form.logoUrl}
-                  busy={uploading === "logoUrl"}
-                  onFiles={(files) => upload("logoUrl", files)}
-                />
+                <div
+                  data-favicon-picker="true"
+                  className="grid gap-3"
+                >
+                  <UploadCard
+                    title="Store logo"
+                    value={form.logoUrl}
+                    busy={uploading === "logoUrl"}
+                    onFiles={(files) => upload("logoUrl", files)}
+                  />
+
+                  <button
+                    type="button"
+                    className={[
+                      "flex min-h-12 items-center justify-center gap-2 rounded-2xl border px-4 text-[9px] font-extrabold uppercase tracking-[0.12em] transition",
+                      form.logoUrl &&
+                      form.faviconUrl === form.logoUrl
+                        ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                        : "border-trap-blue/15 bg-white text-trap-blue hover:bg-[#eef1ff]",
+                    ].join(" ")}
+                    disabled={!form.logoUrl}
+                    onClick={() =>
+                      update("faviconUrl", form.logoUrl)
+                    }
+                  >
+                    {form.logoUrl &&
+                    form.faviconUrl === form.logoUrl ? (
+                      <CheckCircle2 size={16} />
+                    ) : (
+                      <Globe2 size={16} />
+                    )}
+
+                    {form.logoUrl &&
+                    form.faviconUrl === form.logoUrl
+                      ? "Selected as browser icon"
+                      : "Use logo as browser icon"}
+                  </button>
+
+                  <div className="flex items-center gap-3 rounded-2xl border border-trap-blue/10 bg-[#f8f9fd] p-3">
+                    <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-white shadow-sm">
+                      <img
+                        src={form.faviconUrl || "/favicon.svg"}
+                        alt="Browser tab icon preview"
+                        className="h-full w-full object-contain p-1.5"
+                      />
+                    </span>
+
+                    <span className="min-w-0">
+                      <b className="block text-xs text-trap-blue">
+                        Browser tab preview
+                      </b>
+
+                      <small className="mt-1 block text-[10px] font-medium leading-4 text-trap-ink/45">
+                        A square PNG, WEBP or SVG gives the clearest result. Save changes after selecting.
+                      </small>
+                    </span>
+                  </div>
+
+                  {form.faviconUrl ? (
+                    <button
+                      type="button"
+                      className="justify-self-start text-[10px] font-extrabold uppercase tracking-[0.1em] text-trap-orange underline underline-offset-4"
+                      onClick={() =>
+                        update("faviconUrl", "")
+                      }
+                    >
+                      Use default browser icon
+                    </button>
+                  ) : null}
+                </div>
 
                 <UploadCard
                   title="Cover image"
@@ -383,6 +450,8 @@ export default function ShopManager({ refreshToken }) {
                 />
               </div>
             </section>
+            <AdminPasswordCard />
+
 
             <div
           data-store-homepage-media

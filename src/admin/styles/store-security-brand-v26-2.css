@@ -1,0 +1,536 @@
+.admin-password-trigger {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.58rem;
+  border: 1px solid rgba(1, 30, 160, 0.16);
+  border-radius: 999px;
+  background: #fff;
+  padding: 0.72rem 1.05rem;
+  color: #011ea0;
+  font-size: 0.74rem;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.admin-password-trigger:hover {
+  border-color: rgba(1, 30, 160, 0.3);
+  background: #eef1ff;
+  transform: translateY(-1px);
+}
+
+.admin-password-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  background: rgba(7, 17, 63, 0.58);
+  padding:
+    max(1rem, env(safe-area-inset-top))
+    max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom))
+    max(1rem, env(safe-area-inset-left));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.admin-password-dialog {
+  width: min(100%, 700px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  border-radius: 28px;
+  background: #fffdf8;
+  box-shadow: 0 28px 90px rgba(7, 17, 63, 0.28);
+}
+
+.admin-password-dialog-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: start;
+  border-bottom: 1px solid rgba(1, 30, 160, 0.1);
+  background:
+    radial-gradient(circle at top right, rgba(255, 229, 58, 0.38), transparent 34%),
+    linear-gradient(135deg, #eef1ff, #fffdf8 62%);
+  padding: 1.5rem;
+}
+
+.admin-password-dialog-icon {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border-radius: 17px;
+  background: #011ea0;
+  color: #ffe53a;
+}
+
+.admin-password-eyebrow {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #ef4d05;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.admin-password-dialog-header h2 {
+  color: #011ea0;
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.admin-password-dialog-header p {
+  max-width: 52ch;
+  margin-top: 0.55rem;
+  color: rgba(7, 17, 63, 0.58);
+  font-size: 0.84rem;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.admin-password-close {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid rgba(1, 30, 160, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #011ea0;
+}
+
+.admin-password-form {
+  display: grid;
+  gap: 1.15rem;
+  padding: 1.5rem;
+}
+
+.admin-password-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.admin-password-field > span {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #07113f;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.admin-password-field > div {
+  position: relative;
+}
+
+.admin-password-field input {
+  width: 100%;
+  min-height: 54px;
+  border: 1px solid rgba(1, 30, 160, 0.15);
+  border-radius: 16px;
+  background: #fff;
+  padding: 0.82rem 3.3rem 0.82rem 1rem;
+  color: #07113f;
+  font-size: 1rem;
+  font-weight: 700;
+  outline: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.admin-password-field input:focus {
+  border-color: rgba(1, 30, 160, 0.58);
+  box-shadow: 0 0 0 4px rgba(1, 30, 160, 0.08);
+}
+
+.admin-password-field button {
+  position: absolute;
+  inset: 4px 4px 4px auto;
+  display: grid;
+  width: 46px;
+  place-items: center;
+  border-radius: 13px;
+  color: rgba(1, 30, 160, 0.64);
+}
+
+.admin-password-strength {
+  border: 1px solid rgba(1, 30, 160, 0.1);
+  border-radius: 18px;
+  background: #f8f9fd;
+  padding: 1rem;
+}
+
+.admin-password-strength-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: rgba(7, 17, 63, 0.55);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.admin-password-strength-heading b {
+  color: #011ea0;
+}
+
+.admin-password-strength-bars {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+}
+
+.admin-password-strength-bars span {
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(1, 30, 160, 0.09);
+}
+
+.admin-password-strength-bars span[data-active="true"] {
+  background: linear-gradient(90deg, #011ea0, #ef4d05);
+}
+
+.admin-password-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.85rem;
+  margin-top: 0.85rem;
+}
+
+.admin-password-checks span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(7, 17, 63, 0.42);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.admin-password-checks span[data-valid="true"] {
+  color: #137a45;
+}
+
+.admin-password-note {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  border-radius: 16px;
+  background: #fff9d7;
+  padding: 0.95rem 1rem;
+  color: rgba(7, 17, 63, 0.68);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.admin-password-note svg {
+  flex: 0 0 auto;
+  color: #011ea0;
+}
+
+.admin-password-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.admin-password-cancel,
+.admin-password-submit {
+  display: inline-flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: 16px;
+  padding: 0.82rem 1.2rem;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.admin-password-cancel {
+  border: 1px solid rgba(1, 30, 160, 0.13);
+  background: #fff;
+  color: #011ea0;
+}
+
+.admin-password-submit {
+  min-width: 200px;
+  background: #011ea0;
+  color: #ffe53a;
+}
+
+.admin-password-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.brand-logo-control {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  gap: 1.2rem;
+  border: 1px solid rgba(1, 30, 160, 0.11);
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, #f7f8ff, #fffdf8);
+  padding: 1rem;
+}
+
+.brand-logo-preview {
+  display: grid;
+  min-height: 210px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(1, 30, 160, 0.09);
+  border-radius: 19px;
+  background:
+    linear-gradient(45deg, #f2f4fb 25%, transparent 25%),
+    linear-gradient(-45deg, #f2f4fb 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f2f4fb 75%),
+    linear-gradient(-45deg, transparent 75%, #f2f4fb 75%),
+    #fff;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+  background-size: 16px 16px;
+}
+
+.brand-logo-preview img {
+  width: 100%;
+  height: 100%;
+  max-height: 210px;
+  object-fit: contain;
+  padding: 1.15rem;
+}
+
+.brand-logo-empty {
+  display: grid;
+  gap: 0.5rem;
+  place-items: center;
+  padding: 1rem;
+  text-align: center;
+  color: rgba(1, 30, 160, 0.4);
+}
+
+.brand-logo-empty strong {
+  color: rgba(1, 30, 160, 0.68);
+  font-size: 0.8rem;
+}
+
+.brand-logo-empty span {
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.brand-logo-content {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.brand-logo-heading h4 {
+  margin-top: 0.2rem;
+  color: #011ea0;
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.brand-logo-heading p {
+  margin-top: 0.38rem;
+  color: rgba(7, 17, 63, 0.52);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.brand-logo-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.brand-logo-action {
+  display: inline-flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.62rem;
+  border-radius: 16px;
+  padding: 0.86rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 900;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.brand-logo-action:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.brand-logo-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.brand-logo-action-primary {
+  background: #011ea0;
+  color: #ffe53a;
+  box-shadow: 0 12px 24px rgba(1, 30, 160, 0.16);
+}
+
+.brand-logo-action-secondary {
+  border: 1px solid rgba(1, 30, 160, 0.16);
+  background: #fff;
+  color: #011ea0;
+}
+
+.brand-logo-action-selected {
+  border: 1px solid #b9e6cb;
+  background: #ecf9f1;
+  color: #137a45;
+}
+
+.brand-logo-browser-preview {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.8rem;
+  align-items: center;
+  border: 1px solid rgba(1, 30, 160, 0.09);
+  border-radius: 16px;
+  background: #fff;
+  padding: 0.8rem;
+}
+
+.brand-logo-browser-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #f5f6fb;
+}
+
+.brand-logo-browser-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 0.38rem;
+}
+
+.brand-logo-browser-copy {
+  min-width: 0;
+}
+
+.brand-logo-browser-copy b {
+  display: block;
+  color: #011ea0;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.brand-logo-browser-copy small {
+  display: block;
+  margin-top: 0.2rem;
+  color: rgba(7, 17, 63, 0.48);
+  font-size: 0.66rem;
+  font-weight: 650;
+  line-height: 1.42;
+}
+
+.brand-logo-reset {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  border-radius: 12px;
+  background: #fff1eb;
+  padding: 0.58rem 0.82rem;
+  color: #c63d00;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+@media (max-width: 720px) {
+  .admin-password-overlay {
+    align-items: end;
+    padding: 0;
+  }
+
+  .admin-password-dialog {
+    width: 100%;
+    max-height: min(92svh, 840px);
+    overflow-y: auto;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .admin-password-dialog-header {
+    padding: 1.15rem;
+  }
+
+  .admin-password-dialog-icon {
+    width: 46px;
+    height: 46px;
+  }
+
+  .admin-password-form {
+    padding:
+      1.15rem
+      1.15rem
+      max(1.15rem, env(safe-area-inset-bottom));
+  }
+
+  .admin-password-field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-password-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-password-submit {
+    min-width: 0;
+    order: -1;
+  }
+
+  .brand-logo-control {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-logo-preview {
+    min-height: 170px;
+  }
+
+  .brand-logo-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-logo-action {
+    min-height: 58px;
+    font-size: 0.83rem;
+  }
+
+  .brand-logo-browser-preview {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .brand-logo-reset {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}

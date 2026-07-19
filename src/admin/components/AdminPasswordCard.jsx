@@ -1,13 +1,19 @@
 import {
+  CheckCircle2,
   Eye,
   EyeOff,
   KeyRound,
   Loader2,
+  LockKeyhole,
   ShieldCheck,
+  X,
 } from "lucide-react";
 import {
+  useEffect,
+  useMemo,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import { api } from "../../lib/api.js";
 import {
   useToast,
@@ -19,7 +25,23 @@ const emptyForm = {
   confirmPassword: "",
 };
 
+function scorePassword(value) {
+  const password =
+    String(value || "");
+
+  return [
+    password.length >= 8,
+    /[a-z]/.test(password),
+    /[A-Z]/.test(password),
+    /\d/.test(password),
+    /[^A-Za-z0-9]/.test(password),
+  ].filter(Boolean).length;
+}
+
 export default function AdminPasswordCard() {
+  const [open, setOpen] =
+    useState(false);
+
   const [form, setForm] =
     useState(emptyForm);
 
@@ -29,30 +51,84 @@ export default function AdminPasswordCard() {
   const [showCurrent, setShowCurrent] =
     useState(false);
 
-  const [showNext, setShowNext] =
+  const [showNew, setShowNew] =
     useState(false);
 
-  const toast =
-    useToast();
+  const [showConfirm, setShowConfirm] =
+    useState(false);
 
-  function update(
-    field,
-    value
-  ) {
-    setForm(
-      (current) => ({
-        ...current,
-        [field]: value,
-      })
+  const toast = useToast();
+
+  const strength = useMemo(
+    () => scorePassword(
+      form.newPassword
+    ),
+    [form.newPassword]
+  );
+
+  const valid = Boolean(
+    form.currentPassword &&
+    form.newPassword.length >= 8 &&
+    form.newPassword ===
+      form.confirmPassword &&
+    form.currentPassword !==
+      form.newPassword
+  );
+
+  useEffect(() => {
+    if (!open) {
+      return undefined;
+    }
+
+    function handleKeyDown(event) {
+      if (
+        event.key === "Escape" &&
+        !saving
+      ) {
+        closeDialog();
+      }
+    }
+
+    window.addEventListener(
+      "keydown",
+      handleKeyDown
     );
+
+    return () => {
+      window.removeEventListener(
+        "keydown",
+        handleKeyDown
+      );
+    };
+  }, [open, saving]);
+
+  function update(field, value) {
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+    }));
+  }
+
+  function resetDialogState() {
+    setForm(emptyForm);
+    setShowCurrent(false);
+    setShowNew(false);
+    setShowConfirm(false);
+  }
+
+  function closeDialog() {
+    if (saving) {
+      return;
+    }
+
+    setOpen(false);
+    resetDialogState();
   }
 
   async function submit(event) {
     event.preventDefault();
 
-    if (
-      !form.currentPassword
-    ) {
+    if (!form.currentPassword) {
       toast.show(
         "Enter the current password.",
         "error"
@@ -86,7 +162,7 @@ export default function AdminPasswordCard() {
       form.newPassword
     ) {
       toast.show(
-        "Choose a new password that is different from the current password.",
+        "Choose a password different from the current password.",
         "error"
       );
       return;
@@ -99,12 +175,13 @@ export default function AdminPasswordCard() {
         await api.auth
           .changePassword(form);
 
-      setForm(emptyForm);
-
       toast.show(
         data?.message ||
         "Password changed successfully."
       );
+
+      setOpen(false);
+      resetDialogState();
     } catch (error) {
       toast.show(
         error.message,
@@ -116,130 +193,197 @@ export default function AdminPasswordCard() {
   }
 
   return (
-    <section
-      data-admin-password-card="true"
-      className="admin-card p-5 sm:p-6"
-    >
-      <div className="flex flex-col gap-4 border-b border-trap-blue/10 pb-5 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <div className="flex items-center gap-3">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#eef1ff] text-trap-blue">
-              <ShieldCheck
-                size={21}
-              />
-            </span>
-
-            <div>
-              <h3 className="text-lg font-extrabold text-trap-blue">
-                Account security
-              </h3>
-
-              <p className="mt-1 text-xs font-medium leading-5 text-trap-ink/45">
-                Change the password before handing the Admin account to the store owner.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <span className="admin-badge self-start bg-[#fff9d7] text-trap-blue">
-          Encrypted
-        </span>
-      </div>
-
-      <form
-        className="mt-6 grid gap-5"
-        onSubmit={submit}
+    <>
+      <button
+        type="button"
+        className="admin-password-trigger"
+        onClick={() =>
+          setOpen(true)
+        }
       >
-        <PasswordField
-          label="Current password"
-          value={
-            form.currentPassword
-          }
-          visible={showCurrent}
-          onVisible={() =>
-            setShowCurrent(
-              (value) => !value
-            )
-          }
-          onChange={(value) =>
-            update(
-              "currentPassword",
-              value
-            )
-          }
-          autoComplete="current-password"
-        />
+        <ShieldCheck size={18} />
+        <span>Security</span>
+      </button>
 
-        <div className="grid gap-5 sm:grid-cols-2">
-          <PasswordField
-            label="New password"
-            value={
-              form.newPassword
-            }
-            visible={showNext}
-            onVisible={() =>
-              setShowNext(
-                (value) => !value
-              )
-            }
-            onChange={(value) =>
-              update(
-                "newPassword",
-                value
-              )
-            }
-            autoComplete="new-password"
-          />
+      {open &&
+      typeof document !==
+        "undefined"
+        ? createPortal(
+            <div
+              className="admin-password-overlay"
+              role="presentation"
+              onMouseDown={(event) => {
+                if (
+                  event.target ===
+                  event.currentTarget
+                ) {
+                  closeDialog();
+                }
+              }}
+            >
+              <section
+                className="admin-password-dialog"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="admin-password-title"
+              >
+                <header className="admin-password-dialog-header">
+                  <span className="admin-password-dialog-icon">
+                    <LockKeyhole
+                      size={25}
+                    />
+                  </span>
 
-          <PasswordField
-            label="Confirm new password"
-            value={
-              form.confirmPassword
-            }
-            visible={showNext}
-            onVisible={() =>
-              setShowNext(
-                (value) => !value
-              )
-            }
-            onChange={(value) =>
-              update(
-                "confirmPassword",
-                value
-              )
-            }
-            autoComplete="new-password"
-          />
-        </div>
+                  <div>
+                    <span className="admin-password-eyebrow">
+                      Account security
+                    </span>
 
-        <div className="flex flex-col gap-3 rounded-2xl border border-trap-blue/10 bg-[#f8f9fd] p-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs font-medium leading-5 text-trap-ink/50">
-            Use at least 8 characters. Changing the owner password revokes other owner sessions.
-          </p>
+                    <h2 id="admin-password-title">
+                      Change admin password
+                    </h2>
 
-          <button
-            type="submit"
-            className="admin-button-primary shrink-0"
-            disabled={saving}
-          >
-            {saving ? (
-              <Loader2
-                className="animate-spin"
-                size={16}
-              />
-            ) : (
-              <KeyRound
-                size={16}
-              />
-            )}
+                    <p>
+                      Update the password before handing this Admin account to the store owner.
+                    </p>
+                  </div>
 
-            {saving
-              ? "Changing..."
-              : "Change password"}
-          </button>
-        </div>
-      </form>
-    </section>
+                  <button
+                    type="button"
+                    className="admin-password-close"
+                    onClick={closeDialog}
+                    disabled={saving}
+                    aria-label="Close password dialog"
+                  >
+                    <X size={20} />
+                  </button>
+                </header>
+
+                <form
+                  className="admin-password-form"
+                  onSubmit={submit}
+                >
+                  <PasswordField
+                    label="Current password"
+                    value={
+                      form.currentPassword
+                    }
+                    visible={showCurrent}
+                    onVisible={() =>
+                      setShowCurrent(
+                        (value) => !value
+                      )
+                    }
+                    onChange={(value) =>
+                      update(
+                        "currentPassword",
+                        value
+                      )
+                    }
+                    autoComplete="current-password"
+                    autoFocus
+                  />
+
+                  <div className="admin-password-field-grid">
+                    <PasswordField
+                      label="New password"
+                      value={
+                        form.newPassword
+                      }
+                      visible={showNew}
+                      onVisible={() =>
+                        setShowNew(
+                          (value) => !value
+                        )
+                      }
+                      onChange={(value) =>
+                        update(
+                          "newPassword",
+                          value
+                        )
+                      }
+                      autoComplete="new-password"
+                    />
+
+                    <PasswordField
+                      label="Confirm new password"
+                      value={
+                        form.confirmPassword
+                      }
+                      visible={showConfirm}
+                      onVisible={() =>
+                        setShowConfirm(
+                          (value) => !value
+                        )
+                      }
+                      onChange={(value) =>
+                        update(
+                          "confirmPassword",
+                          value
+                        )
+                      }
+                      autoComplete="new-password"
+                    />
+                  </div>
+
+                  <PasswordStrength
+                    value={
+                      form.newPassword
+                    }
+                    score={strength}
+                  />
+
+                  <div className="admin-password-note">
+                    <ShieldCheck
+                      size={19}
+                    />
+
+                    <span>
+                      Changing the owner password signs out other owner sessions. This device remains signed in.
+                    </span>
+                  </div>
+
+                  <footer className="admin-password-actions">
+                    <button
+                      type="button"
+                      className="admin-password-cancel"
+                      onClick={closeDialog}
+                      disabled={saving}
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      className="admin-password-submit"
+                      disabled={
+                        saving ||
+                        !valid
+                      }
+                    >
+                      {saving ? (
+                        <Loader2
+                          className="animate-spin"
+                          size={19}
+                        />
+                      ) : (
+                        <KeyRound
+                          size={19}
+                        />
+                      )}
+
+                      {saving
+                        ? "Changing..."
+                        : "Change password"}
+                    </button>
+                  </footer>
+                </form>
+              </section>
+            </div>,
+            document.body
+          )
+        : null}
+    </>
   );
 }
 
@@ -250,16 +394,14 @@ function PasswordField({
   onVisible,
   onChange,
   autoComplete,
+  autoFocus = false,
 }) {
   return (
-    <label>
-      <span className="admin-label">
-        {label}
-      </span>
+    <label className="admin-password-field">
+      <span>{label}</span>
 
-      <span className="relative block">
+      <div>
         <input
-          className="admin-input pr-12"
           type={
             visible
               ? "text"
@@ -269,6 +411,7 @@ function PasswordField({
           autoComplete={
             autoComplete
           }
+          autoFocus={autoFocus}
           onChange={(event) =>
             onChange(
               event.target.value
@@ -278,7 +421,6 @@ function PasswordField({
 
         <button
           type="button"
-          className="absolute inset-y-0 right-1 grid w-10 place-items-center rounded-xl text-trap-blue/55 transition hover:bg-trap-blue/5 hover:text-trap-blue"
           onClick={onVisible}
           aria-label={
             visible
@@ -287,12 +429,97 @@ function PasswordField({
           }
         >
           {visible ? (
-            <EyeOff size={17} />
+            <EyeOff size={18} />
           ) : (
-            <Eye size={17} />
+            <Eye size={18} />
           )}
         </button>
-      </span>
+      </div>
     </label>
+  );
+}
+
+function PasswordStrength({
+  value,
+  score,
+}) {
+  const labels = [
+    "Enter a new password",
+    "Very weak",
+    "Weak",
+    "Fair",
+    "Strong",
+    "Very strong",
+  ];
+
+  const checks = [
+    {
+      label: "8+ characters",
+      valid:
+        value.length >= 8,
+    },
+    {
+      label: "Upper and lowercase",
+      valid:
+        /[a-z]/.test(value) &&
+        /[A-Z]/.test(value),
+    },
+    {
+      label: "Number",
+      valid:
+        /\d/.test(value),
+    },
+    {
+      label: "Special character",
+      valid:
+        /[^A-Za-z0-9]/.test(
+          value
+        ),
+    },
+  ];
+
+  return (
+    <div className="admin-password-strength">
+      <div className="admin-password-strength-heading">
+        <span>Password strength</span>
+        <b>{labels[score]}</b>
+      </div>
+
+      <div
+        className="admin-password-strength-bars"
+        aria-hidden="true"
+      >
+        {[1, 2, 3, 4, 5].map(
+          (item) => (
+            <span
+              key={item}
+              data-active={
+                score >= item
+                  ? "true"
+                  : "false"
+              }
+            />
+          )
+        )}
+      </div>
+
+      <div className="admin-password-checks">
+        {checks.map((item) => (
+          <span
+            key={item.label}
+            data-valid={
+              item.valid
+                ? "true"
+                : "false"
+            }
+          >
+            <CheckCircle2
+              size={14}
+            />
+            {item.label}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }

@@ -18,6 +18,14 @@
     <title>TRAP Room | Coffee · Matcha · Homebaked</title>
 
     <script>
+      if (
+        "scrollRestoration" in window.history
+      ) {
+        window.history.scrollRestoration =
+          "manual";
+      }
+    </script>
+    <script>
       document.documentElement.classList.add("js");
     </script>
     <script src="/vendor/taos.js" defer></script>

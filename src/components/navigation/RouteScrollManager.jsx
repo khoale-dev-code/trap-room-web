@@ -1,15 +1,40 @@
-
 import {
   useLayoutEffect,
+  useRef,
 } from "react";
 import {
   useLocation,
 } from "react-router-dom";
 
+const INITIAL_RESET_DELAYS = [
+  0,
+  40,
+  120,
+  320,
+  720,
+  1200,
+];
+
+if (
+  typeof window !==
+    "undefined" &&
+  "scrollRestoration" in
+    window.history
+) {
+  window.history.scrollRestoration =
+    "manual";
+}
+
+function getScrollingElement() {
+  return (
+    document.scrollingElement ||
+    document.documentElement
+  );
+}
+
 function scrollDocumentToTop() {
   const scrollingElement =
-    document.scrollingElement ||
-    document.documentElement;
+    getScrollingElement();
 
   if (scrollingElement) {
     scrollingElement.scrollTop = 0;
@@ -30,10 +55,6 @@ function scrollDocumentToTop() {
     behavior: "auto",
   });
 
-  /*
-   * Reset only explicitly marked nested route containers.
-   * This avoids unexpectedly moving sliders or ordinary content areas.
-   */
   document
     .querySelectorAll(
       "[data-route-scroll-container]"
@@ -44,6 +65,101 @@ function scrollDocumentToTop() {
     });
 }
 
+function scrollToHash(hash) {
+  const id =
+    decodeURIComponent(
+      String(hash || "")
+        .replace(/^#/, "")
+    );
+
+  if (!id) {
+    return false;
+  }
+
+  const target =
+    document.getElementById(id);
+
+  if (!target) {
+    return false;
+  }
+
+  target.scrollIntoView({
+    block: "start",
+    behavior: "auto",
+  });
+
+  return true;
+}
+
+function scheduleInitialReset({
+  hash,
+  cancelledRef,
+}) {
+  const timers = [];
+
+  const run = () => {
+    if (cancelledRef.current) {
+      return;
+    }
+
+    if (
+      hash &&
+      scrollToHash(hash)
+    ) {
+      return;
+    }
+
+    scrollDocumentToTop();
+  };
+
+  for (
+    const delay of
+    INITIAL_RESET_DELAYS
+  ) {
+    if (delay === 0) {
+      const frame =
+        window.requestAnimationFrame(
+          run
+        );
+
+      timers.push({
+        type: "frame",
+        id: frame,
+      });
+
+      continue;
+    }
+
+    const timer =
+      window.setTimeout(
+        run,
+        delay
+      );
+
+    timers.push({
+      type: "timeout",
+      id: timer,
+    });
+  }
+
+  return () => {
+    for (const timer of timers) {
+      if (
+        timer.type ===
+        "frame"
+      ) {
+        window.cancelAnimationFrame(
+          timer.id
+        );
+      } else {
+        window.clearTimeout(
+          timer.id
+        );
+      }
+    }
+  };
+}
+
 export default function RouteScrollManager() {
   const {
     pathname,
@@ -51,61 +167,92 @@ export default function RouteScrollManager() {
     hash,
   } = useLocation();
 
+  const mountedRef =
+    useRef(false);
+
   useLayoutEffect(() => {
-    const previousRestoration =
-      window.history.scrollRestoration;
+    if (
+      "scrollRestoration" in
+      window.history
+    ) {
+      window.history.scrollRestoration =
+        "manual";
+    }
 
-    window.history.scrollRestoration =
-      "manual";
-
-    let frameOne = 0;
-    let frameTwo = 0;
-
-    const run = () => {
-      if (hash) {
-        const target =
-          document.getElementById(
-            decodeURIComponent(
-              hash.slice(1)
-            )
-          );
-
-        if (target) {
-          target.scrollIntoView({
-            block: "start",
-            behavior: "auto",
-          });
-
-          return;
-        }
-      }
-
-      scrollDocumentToTop();
+    const cancelledRef = {
+      current: false,
     };
 
-    run();
+    function cancelDelayedReset() {
+      cancelledRef.current = true;
+    }
 
-    frameOne =
-      window.requestAnimationFrame(() => {
-        run();
-
-        frameTwo =
-          window.requestAnimationFrame(
-            run
-          );
+    const clearScheduled =
+      scheduleInitialReset({
+        hash,
+        cancelledRef,
       });
 
+    const interactionEvents = [
+      "pointerdown",
+      "touchstart",
+      "wheel",
+      "keydown",
+    ];
+
+    for (
+      const eventName of
+      interactionEvents
+    ) {
+      window.addEventListener(
+        eventName,
+        cancelDelayedReset,
+        {
+          passive: true,
+          once: true,
+        }
+      );
+    }
+
+    function handlePageShow(event) {
+      if (
+        event.persisted &&
+        !hash
+      ) {
+        cancelledRef.current = false;
+
+        window.requestAnimationFrame(
+          () => {
+            scrollDocumentToTop();
+          }
+        );
+      }
+    }
+
+    window.addEventListener(
+      "pageshow",
+      handlePageShow
+    );
+
+    mountedRef.current = true;
+
     return () => {
-      window.cancelAnimationFrame(
-        frameOne
-      );
+      clearScheduled();
 
-      window.cancelAnimationFrame(
-        frameTwo
-      );
+      for (
+        const eventName of
+        interactionEvents
+      ) {
+        window.removeEventListener(
+          eventName,
+          cancelDelayedReset
+        );
+      }
 
-      window.history.scrollRestoration =
-        previousRestoration;
+      window.removeEventListener(
+        "pageshow",
+        handlePageShow
+      );
     };
   }, [
     pathname,

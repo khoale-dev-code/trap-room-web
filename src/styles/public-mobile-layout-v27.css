@@ -1,0 +1,103 @@
+/*
+ * TRAP Room public mobile layout V27
+ * Fixes Chrome/iOS restored-scroll and blank space below the public footer.
+ */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: hidden;
+  background: #ffffff;
+}
+
+#root {
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: hidden;
+}
+
+.public-site-layout {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  flex-direction: column;
+  overflow-x: hidden;
+  background: #ffffff;
+}
+
+.public-site-layout > header {
+  flex: 0 0 auto;
+}
+
+.public-site-main {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 0 auto;
+}
+
+.public-site-main > * {
+  width: 100%;
+  min-width: 0;
+}
+
+.public-site-layout
+  footer[data-trap-public-footer="true"] {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  min-height: 0 !important;
+  height: auto !important;
+  margin: 0 !important;
+  flex: 0 0 auto;
+  align-self: stretch;
+  overflow: hidden;
+}
+
+.public-site-layout
+  footer[data-trap-public-footer="true"]
+  > div {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  html,
+  body,
+  #root,
+  .public-site-layout,
+  .public-site-main {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .public-site-layout
+    footer[data-trap-public-footer="true"] {
+    padding-bottom:
+      env(safe-area-inset-bottom);
+  }
+
+  .public-site-layout
+    footer[data-trap-public-footer="true"]
+    * {
+    box-sizing: border-box;
+  }
+}
+
+@supports (min-height: 100dvh) {
+  .public-site-layout {
+    min-height: 100svh;
+  }
+}
